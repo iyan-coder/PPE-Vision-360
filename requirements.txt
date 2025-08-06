@@ -7,3 +7,7 @@ opencv-python
 uvicorn
 python-multipart
 streamlit
+ipykernel
+spacy==3.7.2
+sentence-transformers
+faiss-cpu
