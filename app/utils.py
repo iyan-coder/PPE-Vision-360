@@ -1,28 +1,28 @@
 import cv2
 import numpy as np
+import tensorflow as tf
 from ultralytics import YOLO
-from keras.layers import TFSMLayer
 
 # Load YOLOv8 Detection Model
 print("Loading Detection Model...")
 detection_model = YOLO(r'D:\PPE-Vision-360\models\ppe_detection_best.pt')
 print("Detection Model Loaded!")
 
-# Load Classifiers using TFSMLayer (Keras 3.x way)
+# Load Classifiers using tf.saved_model.load
 print("Loading Gloves Classifier...")
-gloves_classifier = TFSMLayer(r'D:\PPE-Vision-360\models\best_glove_classifier_static', call_endpoint='serving_default')
+gloves_classifier = tf.saved_model.load(r'D:\PPE-Vision-360\models\best_glove_classifier_static').signatures['serving_default']
 print("Gloves Classifier Loaded!")
 
 print("Loading Helmet Classifier...")
-helmet_classifier = TFSMLayer(r'D:\PPE-Vision-360\models\best_helmet_classifier_static', call_endpoint='serving_default')
+helmet_classifier = tf.saved_model.load(r'D:\PPE-Vision-360\models\best_helmet_classifier_static').signatures['serving_default']
 print("Helmet Classifier Loaded!")
 
 print("Loading Vest Classifier...")
-vest_classifier = TFSMLayer(r'D:\PPE-Vision-360\models\best_vest_classifier_static', call_endpoint='serving_default')
+vest_classifier = tf.saved_model.load(r'D:\PPE-Vision-360\models\best_vest_classifier_static').signatures['serving_default']
 print("Vest Classifier Loaded!")
 
 print("Loading Shoes Classifier...")
-shoes_classifier = TFSMLayer(r'D:\PPE-Vision-360\models\best_shoe_classifier_static', call_endpoint='serving_default')
+shoes_classifier = tf.saved_model.load(r'D:\PPE-Vision-360\models\best_shoe_classifier_static').signatures['serving_default']
 print("Shoes Classifier Loaded!")
 
 # Class ID Mapping
@@ -51,7 +51,7 @@ def preprocess_crop(crop):
     crop = crop.astype('float32') / 255.0
     crop = np.expand_dims(crop, axis=0)
     print(f"Final Preprocessed Crop Shape: {crop.shape}")
-    return crop
+    return tf.convert_to_tensor(crop)
 
 # Detect + Classify PPE
 def detect_and_classify(image_path):
@@ -81,30 +81,24 @@ def detect_and_classify(image_path):
         x1, y1, x2, y2 = map(int, det.xyxy[0])
         print(f"Cropping Coordinates: x1={x1}, y1={y1}, x2={x2}, y2={y2}")
         crop = image[y1:y2, x1:x2]
-
-        crop = preprocess_crop(crop)
+        crop_tensor = preprocess_crop(crop)
 
         # Run Inference
         print(f"Running Classifier for {class_name}...")
         if class_name == 'Helmet':
-            raw_output = helmet_classifier(crop)
+            raw_output = helmet_classifier(crop_tensor)
         elif class_name == 'Gloves':
-            raw_output = gloves_classifier(crop)
+            raw_output = gloves_classifier(crop_tensor)
         elif class_name == 'Vest':
-            raw_output = vest_classifier(crop)
+            raw_output = vest_classifier(crop_tensor)
         elif class_name == 'Shoes':
-            raw_output = shoes_classifier(crop)
+            raw_output = shoes_classifier(crop_tensor)
         else:
             print(f"Unknown class: {class_name}")
             continue
 
-        # Handle Output Dict or Tensor
-        if isinstance(raw_output, dict):
-            print(f"Classifier Output Keys: {raw_output.keys()}")
-            output_tensor = list(raw_output.values())[0]
-        else:
-            output_tensor = raw_output
-
+        # Get prediction from output
+        output_tensor = list(raw_output.values())[0]
         prediction = output_tensor[0][0].numpy()
         compliance = 'Compliant' if prediction >= 0.5 else 'Non-Compliant'
         compliance_result[class_name] = compliance
