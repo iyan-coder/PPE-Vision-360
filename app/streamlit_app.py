@@ -6,6 +6,9 @@ import faiss
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
+import tensorflow as tf
+from transformers import TFAutoModelForSequenceClassification, AutoTokenizer
+
 
 # ---- PAGE CONFIG ----
 st.set_page_config(page_title="PPE Vision 360", layout="centered")
@@ -37,10 +40,20 @@ st.markdown("""
 
 # ---- SIDEBAR ----
 st.sidebar.title("🦺 PPE Vision 360")
-st.sidebar.info("AI-driven PPE Compliance Assistant\n\n🔍 Image Detection + 🧑‍💻 Chatbot Support")
+st.sidebar.info("AI-driven PPE Compliance Assistant\n\n🔍 Image Detection + 🧑‍💻 Chatbot Support + 🧠 BERT Text Classifier")
+
+
+# ---- Load BERT model and tokenizer (once) ----
+@st.cache_resource
+def load_bert_model():
+    model = TFAutoModelForSequenceClassification.from_pretrained(r"D:\PPE-Vision-360\models\saved_distillbert")
+    tokenizer = AutoTokenizer.from_pretrained(r"D:\PPE-Vision-360\models\saved_distillbert")
+    return model, tokenizer
+
+bert_model, bert_tokenizer = load_bert_model()
 
 # ---- MAIN TABS ----
-tab1, tab2 = st.tabs(["🖼️ Image Compliance", "💬 Ask OSHA Bot"])
+tab1, tab2, tab3 = st.tabs(["🖼️ Image Compliance", "💬 Ask OSHA Bot", "🧠 BERT Classifier"])
 
 # ---- TAB 1: IMAGE COMPLIANCE ----
 with tab1:
@@ -85,7 +98,6 @@ with tab1:
                     st.error("⚠️ Something went wrong while calling the API.")
                     st.text(str(e))
 
-
 # ---- TAB 2: ASK OSHA CHATBOT ----
 with tab2:
     st.title("💬 OSHA Compliance Chatbot")
@@ -126,3 +138,39 @@ with tab2:
             st.markdown(f"**Best Match:** {matched_question}")
             st.markdown(f"**Answer:** {matched_answer}")
             st.caption(f"🔎 Distance Score: {distance:.4f}")
+
+# ---- TAB 3: BERT CLASSIFIER ----
+with tab3:
+    st.title("🧠 BERT Text Classifier")
+    st.markdown("Enter text to classify using the trained BERT model.")
+
+    user_text = st.text_area("Enter your text here...")
+
+    if st.button("Classify Text") and user_text.strip():
+        with st.spinner("Classifying..."):
+            # Tokenize inputs for BERT
+            inputs = bert_tokenizer(
+                user_text,
+                padding=True,
+                truncation=True,
+                max_length=128,
+                return_tensors="tf"
+            )
+
+            # Predict - model returns a TFSequenceClassifierOutput object
+            outputs = bert_model(**inputs)
+            logits = outputs.logits  # extract logits tensor
+            
+            probs = tf.nn.softmax(logits, axis=-1)
+            pred_class_idx = tf.argmax(probs, axis=1).numpy()[0]
+            confidence = probs[0, pred_class_idx].numpy()
+
+            # You need to provide your class labels here explicitly:
+            # Example:
+            class_names = ["Emergency_Response","Hazard_Reporting","PPE_Compliance", "PPE_NonCompliance", "Safety_Procedure"]
+            # Replace above list with your actual class names in order matching your model's output
+
+            predicted_label = class_names[pred_class_idx]
+
+            st.success(f"Prediction: **{predicted_label}**")
+            st.write(f"Confidence: {confidence:.2%}")
