@@ -16,3 +16,6 @@ huggingface_hub
 uvicorn
 faiss-cpu
 tf-keras
+python-dotenv
+openai
+groq

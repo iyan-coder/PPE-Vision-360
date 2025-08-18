@@ -3,7 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 import shutil
 import os
-from app.utils import detect_and_classify
+from src.PPE_VISION_360.utils.fastapi_utils import detect_and_classify
 
 app = FastAPI()
 

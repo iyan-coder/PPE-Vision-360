@@ -2,3 +2,4 @@ datasets
 models
 venv
 .env
+logs
