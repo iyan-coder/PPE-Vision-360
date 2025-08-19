@@ -7,10 +7,10 @@ import streamlit as st
 # -------------------------------
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src")))
 
-from PPE_VISION_360.chat_engine.model_loader import get_faiss
-from PPE_VISION_360.chat_engine.osha_qa import OSHAQA
-from PPE_VISION_360.logger.logger import logger
-from PPE_VISION_360.exception.exception import PpeVision360Exception
+from src.PPE_VISION_360.chat_engine.model_loader import get_faiss
+from src.PPE_VISION_360.chat_engine.osha_qa import OSHAQA
+from src.PPE_VISION_360.logger.logger import logger
+from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
 # 🚀 Streamlit app title
 st.title("💬 OSHA QA Chatbot")

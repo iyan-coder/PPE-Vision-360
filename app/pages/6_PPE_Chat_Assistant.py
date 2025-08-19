@@ -2,13 +2,6 @@ import os
 import sys
 import streamlit as st
 import pandas as pd
-from src.PPE_VISION_360.utils.chat_llm_utils import GroqClient
-from src.PPE_VISION_360.chat_engine.chat_llm import PPEChatbotEngine
-from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
-from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
-from src.PPE_VISION_360.logger.logger import logger
-from src.PPE_VISION_360.exception.exception import PpeVision360Exception
-from src.PPE_VISION_360.chat_engine.model_loader import get_faiss, get_bert, get_ner
 
 # -----------------------------
 # Ensure src path is visible
@@ -16,7 +9,16 @@ from src.PPE_VISION_360.chat_engine.model_loader import get_faiss, get_bert, get
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+
+from src.PPE_VISION_360.logger.logger import logger
 logger.info(f"Project root added to sys.path: {project_root}")
+
+from src.PPE_VISION_360.utils.chat_llm_utils import GroqClient
+from src.PPE_VISION_360.chat_engine.chat_llm import PPEChatbotEngine
+from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
+from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
+from src.PPE_VISION_360.exception.exception import PpeVision360Exception
+from src.PPE_VISION_360.chat_engine.model_loader import get_faiss, get_bert, get_ner
 
 st.title("💬 PPE Assistant Chat (RAG)")
 

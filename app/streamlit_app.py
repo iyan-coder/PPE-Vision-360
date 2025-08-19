@@ -1,55 +1,61 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="PPE Vision 360",
-    layout="centered",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="PPE Vision 360", layout="wide")
 
-# ---- Custom CSS ----
+# ----------------- STYLES -----------------
 st.markdown("""
-<style>
-.main { background-color: #121212; color: #E0E0E0; }
-.stButton > button { 
-    background-color: #0f9d58; 
-    color: white; 
-    border-radius: 10px; 
-    padding: 10px 20px; 
-    font-size: 16px; 
-}
-</style>
+    <style>
+        .card {
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 10px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            background-color: #0f9d58;
+            cursor: pointer;
+        }
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #ddd;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
-# ---- Sidebar Navigation ----
-st.sidebar.title("🦺 PPE Vision 360")
-st.sidebar.info(
-    "Welcome to PPE Vision 360!\n\n"
-    "Use the pages on the left to navigate:\n"
-    "- 1️⃣ 🖼️ Image Compliance\n"
-    "- 2️⃣ 💬 OSHA QA Chatbot\n"
-    "- 3️⃣ 🧠 BERT Classifier\n"
-    "- 4️⃣ 🧾 PPE NER Tagger\n"
-    "- 5️⃣ 📝 PPE Compliance Reasoning\n"
-    "- 6️⃣ 🤖 PPE Chat Assistant"
-)
+# ----------------- HEADER -----------------
+st.title("🦺 PPE Vision 360")
+st.write("All-in-One PPE Compliance Platform")
 
-# ---- Home Page ----
-st.title("🦺 PPE Vision 360 Dashboard")
-st.markdown(
-    """
-    This is your AI-driven PPE Compliance Assistant platform. 
-    
-    **Features:**  
-    1. Image Compliance Checker  
-    2. OSHA QA Chatbot  
-    3. BERT Text Classifier  
-    4. PPE NER Tagger  
-    5. PPE Compliance Reasoning 
-    6. Interactive PPE Chat Assistant  
+# ----------------- MODULES -----------------
+modules = [
+    ("🖼️ PPE Image Compliance", "YOLOv8 detection, segmentation, classification", "pages/1_PPE_Image_Compliance.py"),
+    ("💬 PPE OSHA QA Chatbot", "Retrieval-based Q&A with FAISS", "pages/2_PPE_OSHA_QA_Chatbot.py"),
+    ("🧠 PPE BERT Classifier", "Classify PPE-related text", "pages/3_PPE_BERT_Classifier.py"),
+    ("🧾 PPE NER Tagger", "Extract PPE-related entities", "pages/4_PPE_NER_Tagger.py"),
+    ("📑 PPE Compliance Report Generator", "Generate structured compliance reports", "pages/5_PPE_Compliance_Report_Generator.py"),
+    ("🤖 PPE Chat Assistant", "Conversational multi-turn assistant", "pages/6_PPE_Chat_Assistant.py"),
+    ("🎯 PPE Recommendation System", "Suggest improvements/actions for compliance", "pages/7_PPE_Recommendation_System.py")
+]
 
-    Use the sidebar to navigate to the feature you want to use.
-    """
-)
+# ----------------- GRID LAYOUT -----------------
+cols = st.columns(3)  # 3 cards per row
 
-# ---- Logo ----
-st.image(r"D:\PPE-Vision-360\logo\PPE Assistant Logo Design.png", width=250)
+for i, (title, desc, page) in enumerate(modules):
+    with cols[i % 3]:
+        if st.button(f"{title}", key=i):
+            st.switch_page(page)   # 👈 jumps to the actual module page
+        st.markdown(f"""
+            <div class="card">
+                <h3>{title}</h3>
+                <p>{desc}</p>
+            </div>
+        """, unsafe_allow_html=True)
