@@ -44,7 +44,7 @@ jobs:
           gdown "https://drive.google.com/uc?id=1ifqgjuGV_LVw-K8uDjhoBBch4YEjcuJy" -O models/best_helmet_classifier_static.zip
           unzip -o models/best_helmet_classifier_static.zip -d models/best_helmet_classifier_static
 
-          gdown "https://drive.google.com/uc?id=1WuPcvOfr7spZx7TcfBZw5tPvI9zritPf" -O models/best_vest_classifier_static.zip
+          gdown "https://drive.google.com/file/d/1WuPcvOfr7spZx7TcfBZw5tPvI9zritPf" -O models/best_vest_classifier_static.zip
           unzip -o models/best_vest_classifier_static.zip -d models/best_vest_classifier_static
 
           gdown "https://drive.google.com/uc?id=1103pHSDWEEs2wXwSAV4wCFy8prm9c5yR" -O models/best_shoe_classifier_static.zip
