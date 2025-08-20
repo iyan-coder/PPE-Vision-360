@@ -1,0 +1,59 @@
+name: PPE Vision 360 CI
+
+on:
+  push:
+    branches:
+      - main
+      - master   # triggers if you push to master too
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set up Python 3.10
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install gdown tensorflow==2.17 tf.keras==2.7 ultralytics faiss-cpu pandas numpy
+
+      # 4️⃣ Basic syntax check
+      - name: Run syntax check
+        run: python -m py_compile app.py
+
+      # 5️⃣ Download models and datasets from Google Drive
+      - name: Download PPE models and datasets
+        run: |
+          mkdir -p models datasets/nlp
+
+          # YOLO Detection Model
+          gdown "https://drive.google.com/uc?id=1bnrPYsBq2oaPb7c14QVSs3vRli6x8AQk" -O models/ppe_detection_best.pt
+
+          # PPE classifiers (folders)
+          gdown "https://drive.google.com/uc?id=1qtQannlG65EhI6k5SLNlBWrHvDNY4aOl" -O models/best_glove_classifier_static
+          gdown "https://drive.google.com/uc?id=1ifqgjuGV_LVw-K8uDjhoBBch4YEjcuJy" -O models/best_helmet_classifier_static
+          gdown "https://drive.google.com/uc?id=1WuPcvOfr7spZx7TcfBZw5tPvI9zritPf" -O models/best_vest_classifier_static
+          gdown "https://drive.google.com/uc?id=1103pHSDWEEs2wXwSAV4wCFy8prm9c5yR" -O models/best_shoe_classifier_static
+
+          # DistillBERT (zip)
+          gdown "https://drive.google.com/uc?id=1v5024dYPwsYmoA4UC97_mHt0x3rdaASH" -O models/saved_distillbert.zip
+          unzip -o models/saved_distillbert.zip -d models/saved_distillbert
+
+          # NER Tagger (zip)
+          gdown "https://drive.google.com/uc?id=1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW" -O models/ppe_ner_model.zip
+          unzip -o models/ppe_ner_model.zip -d models/ppe_ner_model
+
+          # FAISS + CSV + embeddings
+          gdown "https://drive.google.com/uc?id=1Xmp6O3DzMqcTev53Y_SwurjxfnNUcocJ" -O datasets/nlp/faiss_index.bin
+          gdown "https://drive.google.com/uc?id=1Lr7vVUF-9BhvQQ7b-TdGMFLRMMuG8UvQ" -O datasets/nlp/osha_qa_cleaned.csv
+          gdown "https://drive.google.com/uc?id=1NrTbmHBdn5YLywkuNHl5Rjdcp9LGYo_w" -O datasets/nlp/qa_embeddings.npy
