@@ -7,7 +7,6 @@ from src.PPE_VISION_360.chat_engine.model_loader import get_bert_drive, get_ner_
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
-
 class HybridRecommender:
     def __init__(self, bert_model_path, tokenizer_path, ner_model_path):
         try:
@@ -64,3 +63,10 @@ class HybridRecommender:
         except Exception as e:
             logger.error("Error in hybrid recommendation process", exc_info=True)
             raise PpeVision360Exception(e, sys)
+
+
+# Example usage
+if __name__ == "__main__":
+    recommender = HybridRecommender("path/to/bert_model", "path/to/tokenizer", "path/to/ner_model")
+    result = recommender.recommend("demo_images/site_001.jpg", "Worker missing safety vest and helmet strap not fastened")
+    print(result)
