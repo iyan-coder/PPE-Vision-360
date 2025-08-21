@@ -57,7 +57,7 @@ flowchart LR
     F --> I
     G --> I
     H --> I
-    I --> J[Compliance reasoning (NER + BERT)]
+    I --> J[Compliance reasoning - NER & BERT]
     J --> K[LLM Assistant / Chatbot]
     K --> L[Dashboard / Exportable Report - CSV/PDF]
 
@@ -90,7 +90,7 @@ flowchart LR
     A[User Query / PPE Question] --> B[FAISS Vector Search]
     B --> C{Relevant PPE Context Found?}
     C -->|Yes| D[Retrieve Context & Metadata]
-    C -->|No| E[Return "Cannot Answer Outside PPE Scope"]
+    C -->|No| E[Return Cannot Answer Outside PPE Scope]
     D --> F[LLM Generates Response Using Retrieved Context]
     F --> G[Provide Human-Friendly Answer / Recommendation]
     G --> H[Dashboard / Chat Interface]
