@@ -3,7 +3,7 @@ from src.PPE_VISION_360.chat_engine.image_detection import ImageComplianceChecke
 from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
 from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
 from src.PPE_VISION_360.chat_engine.compliance_reasoning import generate_compliance_reasoning
-from src.PPE_VISION_360.chat_engine.model_loader import get_bert, get_ner
+from src.PPE_VISION_360.chat_engine.model_loader import get_bert_drive, get_ner_drive
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
@@ -12,8 +12,8 @@ class HybridRecommender:
     def __init__(self, bert_model_path, tokenizer_path, ner_model_path):
         try:
             # Load models
-            self.bert_model, self.bert_tokenizer = get_bert(bert_model_path, tokenizer_path)
-            self.ner_model = get_ner(ner_model_path)
+            self.bert_model, self.bert_tokenizer = get_bert_drive(bert_model_path, tokenizer_path)
+            self.ner_model = get_ner_drive(ner_model_path)
 
             # Initialize modules
             self.image_checker = ImageComplianceChecker()

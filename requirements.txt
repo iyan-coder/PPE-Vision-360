@@ -19,3 +19,4 @@ tf-keras
 python-dotenv
 openai
 groq
+gdown

@@ -1,7 +1,7 @@
 import os
 import sys
 import streamlit as st
-from src.PPE_VISION_360.chat_engine.model_loader import get_ner
+from src.PPE_VISION_360.chat_engine.model_loader import get_ner_drive
 
 # -------------------------------
 # Ensure project root is on path
@@ -19,10 +19,11 @@ st.title("🧾 PPE NER Tagger")
 try:
     
     # Load the custom NER model from saved path
-    nlp_ner = get_ner(r"D:\PPE-Vision-360\models\ppe_ner_model")
+    ner_model = get_ner_drive("1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW")
+
     
     # Wrap loaded model inside NERTagger utility
-    ner_bot = NERTagger(nlp_ner)
+    ner_bot = NERTagger(ner_model)
 
     # Create text input area for user to enter raw text
     text = st.text_area("Enter your text here...")

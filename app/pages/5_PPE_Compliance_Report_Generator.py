@@ -5,7 +5,7 @@ import re
 from src.PPE_VISION_360.chat_engine.compliance_reasoning import generate_compliance_reasoning
 from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
 from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
-from src.PPE_VISION_360.chat_engine.model_loader import get_bert, get_ner
+from src.PPE_VISION_360.chat_engine.model_loader import get_bert_drive, get_ner_drive
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
@@ -24,14 +24,14 @@ if st.button("Generate Reasoning") and user_input.strip():
         # -----------------------------
         # Load cached models
         # -----------------------------
-        bert_model_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-        tokenizer_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-        ner_model_path = r"D:\PPE-Vision-360\models\ppe_ner_model"
+        bert_model_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",
+        tokenizer_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",
+        ner_model_path = "1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW"
 
-        bert_model, bert_tokenizer = get_bert(bert_model_path, tokenizer_path)
+        bert_model, bert_tokenizer = get_bert_drive(bert_model_path, tokenizer_path)
         logger.info("BERT model and tokenizer loaded successfully.")
 
-        ner_model = get_ner(ner_model_path)
+        ner_model = get_ner_drive(ner_model_path)
         logger.info("NER model loaded successfully.")
 
         bert_classifier = BERTClassifier(model=bert_model, tokenizer=bert_tokenizer)

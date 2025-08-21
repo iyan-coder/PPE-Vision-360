@@ -25,9 +25,9 @@ if st.button("🚀 Run Hybrid Compliance Check"):
             logger.info("✅ Both image and text report provided by user")
 
             # Paths to ML models
-            bert_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-            tokenizer_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-            ner_path = r"D:\PPE-Vision-360\models\ppe_ner_model"
+            bert_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",
+            tokenizer_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
+            ner_path = "1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW"
 
             # Load hybrid recommender
             logger.info("📥 Loading Hybrid Recommender with models...")

@@ -18,7 +18,7 @@ from src.PPE_VISION_360.chat_engine.chat_llm import PPEChatbotEngine
 from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
 from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
-from src.PPE_VISION_360.chat_engine.model_loader import get_faiss, get_bert, get_ner
+from src.PPE_VISION_360.chat_engine.model_loader import get_faiss_drive, get_bert_drive, get_ner_drive
 
 st.title("💬 PPE Assistant Chat (RAG)")
 
@@ -36,14 +36,13 @@ try:
     # -----------------------------
     # Load FAISS + embeddings + CSV
     # -----------------------------
-    embedding_model_name = "all-MiniLM-L6-v2"
-    faiss_index_path = r"D:\PPE-Vision-360\datasets\nlp\faiss_index.bin"
-    data_csv_path = r"D:\PPE-Vision-360\datasets\nlp\osha_qa_cleaned.csv"
-    embeddings_path = r"D:\PPE-Vision-360\datasets\nlp\qa_embeddings.npy"
-
-    embedding_model, qa_data, faiss_index, qa_embeddings = get_faiss(
-        embedding_model_name, faiss_index_path, data_csv_path, embeddings_path
+    embedding_model, qa_data, faiss_index, qa_embeddings = get_faiss_drive(
+        "all-MiniLM-L6-v2",
+        "1Xmp6O3DzMqcTev53Y_SwurjxfnNUcocJ",  # faiss_index.bin
+        "1Lr7vVUF-9BhvQQ7b-TdGMFLRMMuG8UvQ",  # cleaned CSV
+        "1NrTbmHBdn5YLywkuNHl5Rjdcp9LGYo_w"   # embeddings.npy
     )
+
     doc_texts = (qa_data['clean_question'] + " " + qa_data['clean_answer']).tolist()
     k = 1  # Top-k retrieval
     logger.info("FAISS index, embeddings, and document texts loaded successfully.")
@@ -51,17 +50,19 @@ try:
     # -----------------------------
     # Load BERT + tokenizer
     # -----------------------------
-    bert_model_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-    bert_tokenizer_path = r"D:\PPE-Vision-360\models\saved_distillbert"
-    bert_model, bert_tokenizer = get_bert(bert_model_path, bert_tokenizer_path)
+    bert_model, bert_tokenizer = get_bert_drive(
+    "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",  # BERT zip on Drive
+    "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
+    )
+
     bert_classifier = BERTClassifier(bert_model, bert_tokenizer)
     logger.info("BERTClassifier loaded successfully.")
 
     # -----------------------------
     # Load NER
     # -----------------------------
-    ner_model_path = r"D:\PPE-Vision-360\models\ppe_ner_model"
-    ner_model = get_ner(ner_model_path)
+    ner_model = get_ner_drive("1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW")
+
     ner_tagger = NERTagger(ner_model)
     logger.info("NERTagger loaded successfully.")
 
@@ -86,7 +87,7 @@ try:
     # Input form
     # -----------------------------
     with st.form(key="chat_form", clear_on_submit=True):
-        user_input = st.text_area("", height=50, placeholder="Type your message...")
+        user_input = st.text_area("pls ask PPE related questions only", height=50, placeholder="Type your message...")
         submit = st.form_submit_button("Send")
         if submit and user_input.strip():
             st.session_state.pending_message = user_input.strip()

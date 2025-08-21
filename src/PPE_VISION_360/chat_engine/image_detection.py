@@ -1,56 +1,54 @@
-import requests
-from PIL import Image
-import io
 import sys
+import os
+from PIL import Image
+import numpy as np
 import streamlit as st
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
+# Import PPE detection utils
+from src.PPE_VISION_360.utils.fastapi_utils import (
+    detect_and_classify,
+    detection_model,
+    gloves_classifier,
+    helmet_classifier,
+    vest_classifier,
+    shoes_classifier
+)
 
 class ImageComplianceChecker:
-    def __init__(self, api_url="http://127.0.0.1:8000/check_compliance"):
+    def __init__(self):
         try:
-            # Store API URL (default: local FastAPI service)
-            self.api_url = api_url
-            logger.info("ImageComplianceChecker initialized successfully.")
+            logger.info("ImageComplianceChecker initialized successfully (local mode).")
         except Exception as e:
-            # Log and raise custom exception if init fails
             logger.error("Error during ImageComplianceChecker initialization", exc_info=True)
             raise PpeVision360Exception(e, sys)
 
     def check_image(self, uploaded_file):
         """
-        Send an uploaded image to the compliance API and return the response
+        Process an uploaded image using local PPE detection/classification models.
+        Reuses detect_and_classify() pipeline from utils.
         """
         try:
-            # Open the uploaded file as a PIL image
-            image = Image.open(uploaded_file)
+            # Save temporarily in memory to pass to OpenCV
+            temp_path = f"temp_{uploaded_file.name}"
+            image = Image.open(uploaded_file).convert("RGB")
+            image.save(temp_path)
 
-            # Convert image into in-memory byte stream (PNG format)
-            img_bytes = io.BytesIO()
-            image.save(img_bytes, format='PNG')
-            img_bytes.seek(0)  # Reset pointer to start of stream
+            logger.info("Running PPE detection/classification...")
+            result = detect_and_classify(
+                temp_path,
+                detection_model=detection_model,
+                gloves_classifier=gloves_classifier,
+                helmet_classifier=helmet_classifier,
+                vest_classifier=vest_classifier,
+                shoes_classifier=shoes_classifier
+            )
 
-            # Prepare file payload for POST request
-            files = {'file': (uploaded_file.name, img_bytes, 'image/png')}
-
-            logger.info("Sending image to compliance API...")
-
-            # Send image to compliance API
-            response = requests.post(self.api_url, files=files)
-
-            # If API request is successful
-            if response.status_code == 200:
-                logger.info("Compliance API response received successfully.")
-                return response.json()
-            else:
-                # Log and show error if API fails
-                logger.error(f"Compliance API Error {response.status_code}: {response.text}")
-                st.error(f"API Failed: {response.status_code}")
-                return None
+            logger.info("PPE detection/classification completed successfully.")
+            return result
 
         except Exception as e:
-            # Catch any error (e.g., network, PIL, JSON parsing)
             logger.error("Exception occurred while checking image compliance", exc_info=True)
-            st.error(f"API Exception: {e}")
             raise PpeVision360Exception(e, sys)
+

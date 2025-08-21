@@ -4,5 +4,12 @@ venv
 .env
 logs
 
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore init files (if you don’t want them in repo)
 __init__.py
-__pycache__
+
