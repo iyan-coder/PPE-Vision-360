@@ -12,7 +12,7 @@ from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 st.title("📝 PPE Compliance Reasoning - Batch Mode (Negation-aware, Color Highlight)")
 st.write("Paste multiple PPE reports below, one per line:")
 
-user_input = st.text_area("", height=200)
+user_input = st.text_area("Enter your text here...", height=200)
 
 if st.button("Generate Reasoning") and user_input.strip():
     try:
