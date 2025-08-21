@@ -95,7 +95,7 @@ flowchart LR
     F --> G[Provide Human-Friendly Answer / Recommendation]
     G --> H[Dashboard / Chat Interface]
     H --> A[User Sees Answer]
-```
+
 ---
 ### Quickstart — How to Run Locally
 
