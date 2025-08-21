@@ -11,8 +11,8 @@ if project_root not in sys.path:
 from src.PPE_VISION_360.logger.logger import logger
 logger.info(f"Project root added to sys.path: {project_root}")
 
-from src.PPE_VISION_360.chat_engine.model_loader import get_faiss_drive
-from src.PPE_VISION_360.chat_engine.osha_qa import OSHAQA
+from src.PPE_VISION_360.app_engine.model_loader import get_faiss_drive
+from src.PPE_VISION_360.app_engine.osha_qa import OSHAQA
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 

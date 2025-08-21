@@ -13,8 +13,8 @@ if project_root not in sys.path:
 from src.PPE_VISION_360.logger.logger import logger
 logger.info(f"Project root added to sys.path: {project_root}")
 
-from src.PPE_VISION_360.chat_engine.model_loader import get_bert_drive
-from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
+from src.PPE_VISION_360.app_engine.model_loader import get_bert_drive
+from src.PPE_VISION_360.app_engine.bert_classifier import BERTClassifier
 
 # 🧠 Set Streamlit page title
 st.title("🧠 BERT Text Classifier")

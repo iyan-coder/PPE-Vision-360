@@ -1,7 +1,7 @@
 import sys
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
-from src.PPE_VISION_360.chat_engine.compliance_reasoning import generate_compliance_reasoning
+from src.PPE_VISION_360.app_engine.compliance_reasoning import generate_compliance_reasoning
 import numpy as np
 from sentence_transformers import SentenceTransformer
 

@@ -14,11 +14,11 @@ from src.PPE_VISION_360.logger.logger import logger
 logger.info(f"Project root added to sys.path: {project_root}")
 
 from src.PPE_VISION_360.utils.chat_llm_utils import GroqClient
-from src.PPE_VISION_360.chat_engine.chat_llm import PPEChatbotEngine
-from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
-from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
+from src.PPE_VISION_360.app_engine.chat_llm import PPEChatbotEngine
+from src.PPE_VISION_360.app_engine.bert_classifier import BERTClassifier
+from src.PPE_VISION_360.app_engine.ner_tagger import NERTagger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
-from src.PPE_VISION_360.chat_engine.model_loader import get_faiss_drive, get_bert_drive, get_ner_drive
+from src.PPE_VISION_360.app_engine.model_loader import get_faiss_drive, get_bert_drive, get_ner_drive
 
 st.title("💬 PPE Assistant Chat (RAG)")
 

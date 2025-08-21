@@ -12,7 +12,7 @@ if project_root not in sys.path:
 from src.PPE_VISION_360.logger.logger import logger
 logger.info(f"Project root added to sys.path: {project_root}")
 
-from src.PPE_VISION_360.chat_engine.hybrid_recommender import HybridRecommender
+from src.PPE_VISION_360.app_engine.hybrid_recommender import HybridRecommender
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
 # ---------------- UI ----------------

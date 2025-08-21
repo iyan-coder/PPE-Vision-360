@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="PPE Vision 360", layout="wide")
+st.set_page_config(page_title="SafeSight-AI-Assistant(PPE-Vision-360)", layout="wide")
 
 # ----------------- STYLES -----------------
 st.markdown("""

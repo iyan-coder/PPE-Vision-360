@@ -1,9 +1,9 @@
 import sys
-from src.PPE_VISION_360.chat_engine.image_detection import ImageComplianceChecker
-from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
-from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
-from src.PPE_VISION_360.chat_engine.compliance_reasoning import generate_compliance_reasoning
-from src.PPE_VISION_360.chat_engine.model_loader import get_bert_drive, get_ner_drive
+from src.PPE_VISION_360.app_engine.image_detection import ImageComplianceChecker
+from src.PPE_VISION_360.app_engine.bert_classifier import BERTClassifier
+from src.PPE_VISION_360.app_engine.ner_tagger import NERTagger
+from src.PPE_VISION_360.app_engine.compliance_reasoning import generate_compliance_reasoning
+from src.PPE_VISION_360.app_engine.model_loader import get_bert_drive, get_ner_drive
 from src.PPE_VISION_360.logger.logger import logger
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
