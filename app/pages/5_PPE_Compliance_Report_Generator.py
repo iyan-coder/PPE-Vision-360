@@ -2,6 +2,17 @@ import streamlit as st
 import os
 import sys
 import re
+
+# -----------------------------
+# Ensure src path is visible
+# -----------------------------
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.PPE_VISION_360.logger.logger import logger
+logger.info(f"Project root added to sys.path: {project_root}")
+
 from src.PPE_VISION_360.chat_engine.compliance_reasoning import generate_compliance_reasoning
 from src.PPE_VISION_360.chat_engine.bert_classifier import BERTClassifier
 from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger

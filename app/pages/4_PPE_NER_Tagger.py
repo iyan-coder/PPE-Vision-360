@@ -3,10 +3,15 @@ import sys
 import streamlit as st
 from src.PPE_VISION_360.chat_engine.model_loader import get_ner_drive
 
-# -------------------------------
-# Ensure project root is on path
-# -------------------------------
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src")))
+# -----------------------------
+# Ensure src path is visible
+# -----------------------------
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.PPE_VISION_360.logger.logger import logger
+logger.info(f"Project root added to sys.path: {project_root}")
 
 from src.PPE_VISION_360.chat_engine.ner_tagger import NERTagger
 from src.PPE_VISION_360.logger.logger import logger

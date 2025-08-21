@@ -153,14 +153,14 @@ streamlit run app/streamlit_app.py
 
 You can add images here to show your dashboard:
 
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
-![Dashboard preview](docs/screenshots/dashboard_preview.png)
+![Dashboard preview](docs/screenshots/PPE Vision 360_1.png)
+![Dashboard preview](docs/screenshots/PPE Image Compliance_1.png)
+![Dashboard preview](docs/screenshots/PPE OSHA QA Chatbot_1.png)
+![Dashboard preview](docs/screenshots/PPE BERT Classifier_1.png)
+![Dashboard preview](docs/screenshots/PPE NER Tagger_1.png)
+![Dashboard preview](docs/screenshots/PPE Compliance Report Generator_1.png)
+![Dashboard preview](docs/screenshots/PPE Chat Assistant_1.png)
+![Dashboard preview](docs/screenshots/PPE Recommendation System_1.png)
 
 ---
 

@@ -1,7 +1,18 @@
 import streamlit as st
 import sys
-from src.PPE_VISION_360.chat_engine.hybrid_recommender import HybridRecommender
+import os
+
+# -----------------------------
+# Ensure src path is visible
+# -----------------------------
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from src.PPE_VISION_360.logger.logger import logger
+logger.info(f"Project root added to sys.path: {project_root}")
+
+from src.PPE_VISION_360.chat_engine.hybrid_recommender import HybridRecommender
 from src.PPE_VISION_360.exception.exception import PpeVision360Exception
 
 # ---------------- UI ----------------
@@ -24,8 +35,8 @@ if st.button("🚀 Run Hybrid Compliance Check"):
         else:
             logger.info("✅ Both image and text report provided by user")
 
-            # Paths to ML models
-            bert_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",
+            # Paths to ML models (Google Drive IDs)
+            bert_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
             tokenizer_path = "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
             ner_path = "1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW"
 
@@ -45,36 +56,47 @@ if st.button("🚀 Run Hybrid Compliance Check"):
             st.write("**Detected PPE (Text):**", result['detected_text_items'])
             st.write("**Phase 7 Reasoning (Text):**", result['text_reasoning'])
 
-            # Friendly formatted compliance report
-            if "✅" in result['final_decision']:
-                # If compliant ✅
-                compliance_report = f"""
-                ✅ PPE Compliance Check: **Compliant**
+            # ---------------- Dynamic Compliance Logic ----------------
+            required_ppe = {"Gloves", "Boots", "Vest", "Goggles"}  # changed Safety Vest -> Vest
+            detected_ppe = set(result['detected_image_items']) | set(result['detected_text_items'])
+            missing_ppe = required_ppe - detected_ppe
 
-                All required PPE items are present.  
-                Great job! 🎉 You and your team are protected and compliant.  
+            # Recommendations per missing item
+            recommendations = {
+                "Gloves": "Wear safety gloves to protect your hands.",
+                "Boots": "Wear safety boots to protect your feet.",
+                "Vest": "Wear a reflective vest.",
+                "Goggles": "Wear protective goggles."
+            }
+
+            if not missing_ppe:
+                # Fully compliant
+                compliance_report = f"""
+                ✅ PPE Compliance Check: **Compliant** 🎉
+
+                All required PPE items are present: {', '.join(detected_ppe)}  
 
                 👉 Keep following best practices to maintain safety on site.
                 """
                 st.success(compliance_report)
-                logger.info(f"✅ Final Decision: {result['final_decision']} | Recommendation: {result['final_recommendation']}")
-
+                logger.info(f"✅ Final Decision: Compliant | Detected PPE: {', '.join(detected_ppe)}")
             else:
-                # If non-compliant ⚠️
-                compliance_report = """
+                # Non-compliant, dynamic missing list
+                missing_list = ", ".join(missing_ppe)
+                detected_list = ", ".join(detected_ppe) if detected_ppe else "None detected"
+                missing_recs = [recommendations[item] for item in missing_ppe]
+
+                compliance_report = f"""
                 ⚠️ PPE Compliance Check: **Non-Compliant**
 
-                Missing PPE items:
-                - 🧤 Gloves
-                - 👢 Boots
-                - 🦺 Safety Vest
-                - 🥽 Goggles
+                Detected PPE: {detected_list}  
+                Missing PPE: {missing_list}
 
-                👉 Recommendation: Please ensure all listed PPE is worn before entering the site.  
-                Your safety comes first — compliance protects **you and your team**.
+                👉 Recommendations:
+                - {"\n- ".join(missing_recs)}
                 """
                 st.error(compliance_report)
-                logger.error(f"❌ Final Decision: {result['final_decision']} | Recommendation: {result['final_recommendation']}")
+                logger.warning(f"❌ Final Decision: Non-Compliant | Detected: {detected_list} | Missing: {missing_list}")
 
     except Exception as e:
         # Logs the full stack trace if something breaks
