@@ -43,9 +43,10 @@ An image-based PPE compliance assistant that detects PPE items in photos, classi
 
 #### System overview (flowchart)
 
+
 ```mermaid
 flowchart LR
-    A[User uploads Image] --> B[Preprocessing (resize, augment)]
+    A[User uploads Image] --> B[Preprocessing - resize & augment]
     B --> C[YOLOv8 Detection]
     C --> D{Detected PPE Items}
     D -->|Helmet| E[Helmet classifier & segmentation]
@@ -58,7 +59,8 @@ flowchart LR
     H --> I
     I --> J[Compliance reasoning (NER + BERT)]
     J --> K[LLM Assistant / Chatbot]
-    K --> L[Dashboard / Exportable Report (CSV/PDF)]
+    K --> L[Dashboard / Exportable Report - CSV/PDF]
+
 ```
 ---
 
@@ -83,6 +85,7 @@ sequenceDiagram
  ---
 
 ### Chatbot RAG Explanation (Hybrid LLM + FAISS)
+```mermaid
 flowchart LR
     A[User Query / PPE Question] --> B[FAISS Vector Search]
     B --> C{Relevant PPE Context Found?}
@@ -92,6 +95,7 @@ flowchart LR
     F --> G[Provide Human-Friendly Answer / Recommendation]
     G --> H[Dashboard / Chat Interface]
     H --> A[User Sees Answer]
+```
 ---
 ### Quickstart — How to Run Locally
 
