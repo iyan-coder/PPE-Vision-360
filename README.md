@@ -1,6 +1,15 @@
 # SafeSight AI Assistant — README
 
-**Project tagline:** *From boots to helmets — AI-powered PPE compliance for safer construction worksites.*
+**Project tagline:** *From helmets to boots — AI-powered PPE compliance for safer construction worksites.*
+
+<p align="center">
+<img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/Streamlit-Web%20App-FF4B4B?logo=streamlit&logoColor=white" />
+<img src="https://img.shields.io/badge/YOLO-Object%20Detection-00FFFF?logo=github&logoColor=black" />
+<img src="https://img.shields.io/badge/Deep%20Learning-Neural%20Networks-FF6F00?logo=tensorflow&logoColor=white" />
+<img src="https://img.shields.io/badge/GitHub-Version%20Control-181717?logo=github&logoColor=white" />
+<img src="https://img.shields.io/badge/CI%2FCD-Automation-2F80ED?logo=githubactions&logoColor=white" />
+</p>
 
 ---
 
@@ -39,7 +48,48 @@ An image-based PPE compliance assistant that detects PPE items in photos, classi
 
 ---
 
-### Architecture (Mermaid diagrams)
+### 🗂 Project Structure (Main Skeleton)
+
+> This is the **main structure**; the production codebase contains **additional modules/configs** beyond this outline.
+```
+project/
+├── app/
+│   ├── streamlit_app.py                # Home/Dashboard
+│   ├── pages/
+│   │   ├── 1_PPE_Image_Compliance.py
+│   │   ├── 2_PPE_OSHA_QA.py
+│   │   ├── 3_PPE_BERT_Classifier.py
+│   │   ├── 4_PPE_NER_Tagger.py
+│   │   ├── 5_PPE_Chat.py
+│   ├── fastapi.py                          
+│
+├── src/
+│   └── PPE_VISION_360/
+│       ├── __init__.py
+│       ├── image_detection.py
+│       ├── osha_qa.py
+│       ├── bert_classifier.py
+│       ├── ner_tagger.py
+│       ├── chat_llm.py                
+│       ├── compliance_reasoning.py     
+│       ├── hybrid_recommender.py     
+│       
+│
+├── models/
+│   ├── saved_distillbert/
+│   ├── ppe_ner_model/
+│
+├── datasets/
+│   ├── nlp/
+│       ├── osha_qa_cleaned.csv
+│       ├── faiss_index.bin
+│       ├── qa_embeddings.npy
+│
+├── requirements.txt
+└── README.md
+```
+
+### Architecture
 
 #### System overview (flowchart)
 
@@ -64,7 +114,7 @@ flowchart LR
 ```
 ---
 
-### Sequence: Image → Decision → Report
+#### Sequence: Image → Decision → Report
 
 ```mermaid
 sequenceDiagram
@@ -84,7 +134,7 @@ sequenceDiagram
  ```   
  ---
 
-### Chatbot RAG Explanation (Hybrid LLM + FAISS)
+#### Chatbot RAG Explanation (Hybrid LLM + FAISS)
 ```mermaid
 flowchart LR
     A[User Query / PPE Question] --> B[FAISS Vector Search]
@@ -168,23 +218,20 @@ You can add images here to show your dashboard:
 
 ---
 
-### Example Compliance Output
-```json
-{
-  "image": "site_001.jpg",
-  "detections": [{"class":"helmet","conf":0.92,"bbox":[x,y,w,h]}],
-  "compliant": false,
-  "reasons": ["No safety vest detected", "Helmet strap not fastened"],
-  "recommendation": "Provide reflective vest and ensure helmet strap is secured."
-}
-```
+
 ### How to Contribute
 - Fork the repository.
 - Add or improve dataset, annotations, or model code.
 - Submit a Pull Request (PR) including tests and an example image demonstrating your changes.
 
-### Credits & Contact
+## 👤 Author
+**Adebayo Gabriel** – ML Engineer (**AI × PPE **)  
 - Project lead: You (SafeSight AI Assistant)
 - Tools & models used: YOLOv8, BERT, FAISS, Streamlit, Python
+
+## 🔗 Links 
+📧 iyanuoluwaadebayo04@gmail.com | 🌐 [LinkedIn](https://www.linkedin.com/in/gabriel-adebayo-2a0ba2281) | [GitHub](https://github.com/iyan-coder)  
+
+---
 
 
