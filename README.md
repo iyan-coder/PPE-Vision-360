@@ -1,4 +1,4 @@
-# SafeSight AI Assistant — README
+# SafeSight AI Assistant(PPE_VISION_360)
 
 **Project tagline:** *From helmets to boots — AI-powered PPE compliance for safer construction worksites.*
 

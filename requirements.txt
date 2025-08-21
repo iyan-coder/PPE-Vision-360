@@ -2,7 +2,7 @@ tensorflow==2.17.0
 transformers
 sentence-transformers
 ultralytics
-opencv-python-headless
+
 scikit-learn
 matplotlib
 pandas
@@ -21,3 +21,4 @@ openai
 groq
 gdown
 pillow
+opencv-python-headless
