@@ -57,7 +57,7 @@ if st.button("🚀 Run Hybrid Compliance Check"):
             st.write("**Phase 7 Reasoning (Text):**", result['text_reasoning'])
 
             # ---------------- Dynamic Compliance Logic ----------------
-            required_ppe = {"Gloves", "Boots", "Vest", "Goggles"}  # changed Safety Vest -> Vest
+            required_ppe = {"Gloves", "Boots", "Vest", "Goggles"}  # Safety Vest -> Vest
             detected_ppe = set(result['detected_image_items']) | set(result['detected_text_items'])
             missing_ppe = required_ppe - detected_ppe
 
@@ -72,12 +72,12 @@ if st.button("🚀 Run Hybrid Compliance Check"):
             if not missing_ppe:
                 # Fully compliant
                 compliance_report = f"""
-                ✅ PPE Compliance Check: **Compliant** 🎉
+✅ PPE Compliance Check: **Compliant** 🎉
 
-                All required PPE items are present: {', '.join(detected_ppe)}  
+All required PPE items are present: {', '.join(detected_ppe)}  
 
-                👉 Keep following best practices to maintain safety on site.
-                """
+👉 Keep following best practices to maintain safety on site.
+"""
                 st.success(compliance_report)
                 logger.info(f"✅ Final Decision: Compliant | Detected PPE: {', '.join(detected_ppe)}")
             else:
@@ -85,16 +85,17 @@ if st.button("🚀 Run Hybrid Compliance Check"):
                 missing_list = ", ".join(missing_ppe)
                 detected_list = ", ".join(detected_ppe) if detected_ppe else "None detected"
                 missing_recs = [recommendations[item] for item in missing_ppe]
+                missing_recs_str = "\n- ".join(missing_recs)  # precompute string to avoid backslash in f-string
 
                 compliance_report = f"""
-                ⚠️ PPE Compliance Check: **Non-Compliant**
+⚠️ PPE Compliance Check: **Non-Compliant**
 
-                Detected PPE: {detected_list}  
-                Missing PPE: {missing_list}
+Detected PPE: {detected_list}  
+Missing PPE: {missing_list}
 
-                👉 Recommendations:
-                - {"\n- ".join(missing_recs)}
-                """
+👉 Recommendations:
+- {missing_recs_str}
+"""
                 st.error(compliance_report)
                 logger.warning(f"❌ Final Decision: Non-Compliant | Detected: {detected_list} | Missing: {missing_list}")
 
