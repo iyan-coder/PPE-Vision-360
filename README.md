@@ -180,7 +180,8 @@ streamlit run app/streamlit_app.py
 
 # Streamlit Cloud / Demo Link Placeholder
 
-[![Launch SafeSight AI Assistant](https://img.shields.io/badge/Launch-Streamlit-blue)]([[https://safesight-ai-assistant-azmwpgp2kgpbbrrdgsxvaq.streamlit.app/]])
+[![Launch SafeSight AI Assistant](https://img.shields.io/badge/Launch-Streamlit-blue)](https://safesight-ai-assistant-azmwpgp2kgpbbrrdgsxvaq.streamlit.app/)
+
 
 ### Limitations
 
