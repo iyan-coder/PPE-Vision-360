@@ -2,6 +2,8 @@ import os
 import sys
 import streamlit as st
 import pandas as pd
+import faiss
+import numpy as np
 
 # -----------------------------
 # Ensure src path is visible
@@ -11,8 +13,6 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.PPE_VISION_360.logger.logger import logger
-logger.info(f"Project root added to sys.path: {project_root}")
-
 from src.PPE_VISION_360.utils.chat_llm_utils import GroqClient
 from src.PPE_VISION_360.app_engine.chat_llm import PPEChatbotEngine
 from src.PPE_VISION_360.app_engine.bert_classifier import BERTClassifier
@@ -24,7 +24,7 @@ st.title("💬 PPE Assistant Chat (RAG)")
 
 try:
     # -----------------------------
-    # Session state init
+    # Initialize session state
     # -----------------------------
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
@@ -51,20 +51,31 @@ try:
     # Load BERT + tokenizer
     # -----------------------------
     bert_model, bert_tokenizer = get_bert_drive(
-    "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",  # BERT zip on Drive
-    "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
+        "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH",
+        "1v5024dYPwsYmoA4UC97_mHt0x3rdaASH"
     )
-
     bert_classifier = BERTClassifier(bert_model, bert_tokenizer)
     logger.info("BERTClassifier loaded successfully.")
 
     # -----------------------------
-    # Load NER
+    # Load NER model
     # -----------------------------
     ner_model = get_ner_drive("1OrHQb7f03nvUA7hUO_zulg3BClWP3WVW")
-
     ner_tagger = NERTagger(ner_model)
     logger.info("NERTagger loaded successfully.")
+
+    # -----------------------------
+    # Load SentenceTransformer ONCE using Streamlit cache
+    # -----------------------------
+    from sentence_transformers import SentenceTransformer
+
+    @st.cache_resource
+    def load_sentence_transformer():
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+        logger.info("SentenceTransformer model loaded once via cache_resource.")
+        return model
+
+    faiss_model = load_sentence_transformer()
 
     # -----------------------------
     # Initialize Groq + chatbot engine
@@ -87,7 +98,11 @@ try:
     # Input form
     # -----------------------------
     with st.form(key="chat_form", clear_on_submit=True):
-        user_input = st.text_area("pls ask PPE related questions only", height=50, placeholder="Type your message...")
+        user_input = st.text_area(
+            "Ask PPE-related questions only", 
+            height=50, 
+            placeholder="Type your message..."
+        )
         submit = st.form_submit_button("Send")
         if submit and user_input.strip():
             st.session_state.pending_message = user_input.strip()
@@ -102,34 +117,49 @@ try:
         logger.info(f"Appended user message to chat_history: {msg}")
 
         greetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]
-        ppe_keywords = ["helmet", "gloves", "boots", "vest", "goggles", "ppe", "safety", "protection"]
+        irrelevant_keywords = ["weather", "sports", "food", "music", "movie"]
 
+        # 1️⃣ Check for greetings
         if msg.lower() in greetings:
             reply = "Hello! How can I help you with PPE today?"
             logger.info("Detected greeting message.")
-        elif not any(word.lower() in msg.lower() for word in ppe_keywords):
-            reply = "Sorry, I can only answer questions related to PPE. Please ask about helmets, gloves, boots, vests, or goggles."
-            logger.info("Non-PPE message detected. Sent polite fallback response.")
+
+        # 2️⃣ Check for clearly irrelevant questions
+        elif any(word in msg.lower() for word in irrelevant_keywords):
+            reply = "Sorry, I can only answer questions related to PPE."
+            logger.info("Detected irrelevant message. Sent polite fallback.")
+
+        # 3️⃣ Otherwise, treat as PPE-related and use FAISS similarity
         else:
-            # BERT classification
-            bert_label_raw = bert_classifier.classify(msg)
-            bert_label = bert_label_raw[0]
-            logger.info(f"BERT classified message as: {bert_label}")
+            query_embedding = faiss_model.encode([msg])
+            D, I = faiss_index.search(query_embedding, k)
 
-            # NER extraction
-            ner_items_raw = ner_tagger.detect_entities(msg)
-            required_ppe = ["helmet", "gloves", "boots", "vest", "goggles"]
-            ner_items = [
-                str(item[0]) if isinstance(item, (tuple, list)) else str(item)
-                for item in ner_items_raw
-                if str(item[0] if isinstance(item, (tuple, list)) else item).lower() in required_ppe
-            ]
-            logger.info(f"NER extracted PPE items: {ner_items}")
+            similarity_threshold = 0.3  # Tune this threshold
+            if D[0][0] < similarity_threshold:
+                # Low similarity → fallback
+                reply = "Sorry, I am not sure about that. Can you ask a PPE-specific question?"
+                logger.info(f"Low FAISS similarity ({D[0][0]}). Sent fallback message.")
+            else:
+                # --- BERT classification ---
+                bert_label_raw = bert_classifier.classify(msg)
+                bert_label = bert_label_raw[0]
+                logger.info(f"BERT classified message as: {bert_label}")
 
-            # Chatbot engine (RAG + reasoning)
-            reply = chat_bot.process_message(msg, bert_label=bert_label, ner_items=ner_items)
-            logger.info(f"Generated assistant reply: {reply}")
+                # --- NER extraction ---
+                ner_items_raw = ner_tagger.detect_entities(msg)
+                required_ppe = ["helmet", "gloves", "boots", "vest"]
+                ner_items = [
+                    str(item[0]) if isinstance(item, (tuple, list)) else str(item)
+                    for item in ner_items_raw
+                    if str(item[0] if isinstance(item, (tuple, list)) else item).lower() in required_ppe
+                ]
+                logger.info(f"NER extracted PPE items: {ner_items}")
 
+                # --- Chatbot engine reasoning ---
+                reply = chat_bot.process_message(msg, bert_label=bert_label, ner_items=ner_items)
+                logger.info(f"Generated assistant reply: {reply}")
+
+        # Append assistant reply
         st.session_state.chat_history.append({"role": "assistant", "content": reply})
         st.session_state.pending_message = ""
         logger.info("Appended assistant reply to chat_history.")
@@ -155,7 +185,7 @@ try:
                     </div>
                 </div>""", unsafe_allow_html=True)
 
-        # Auto-scroll
+        # Auto-scroll to bottom
         st.markdown("<div id='bottom'></div>", unsafe_allow_html=True)
         st.markdown("<script>var element = document.getElementById('bottom'); element.scrollIntoView();</script>", unsafe_allow_html=True)
         logger.info("Rendered chat history with auto-scroll.")

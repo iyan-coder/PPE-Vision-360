@@ -16,7 +16,7 @@ def generate_compliance_reasoning(bert_label, ner_items):
         str: Human-readable compliance reasoning.
     """
     try:
-        required_ppe = ["helmet", "gloves", "boots", "vest", "goggles"]
+        required_ppe = ["helmet", "gloves", "boots", "vest"]
 
         # Ensure NER items are strings, not tuples/lists
         ner_items = [item[0] if isinstance(item, (tuple, list)) else item for item in ner_items]
