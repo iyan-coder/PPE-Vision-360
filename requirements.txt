@@ -1,7 +1,7 @@
 tensorflow==2.17.0
+opencv-python-headless
 transformers
 sentence-transformers
-opencv-python-headless
 ultralytics
 scikit-learn
 matplotlib
