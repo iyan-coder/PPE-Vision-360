@@ -20,5 +20,4 @@ python-dotenv
 openai
 groq
 gdown
-pillow
 opencv-python-headless

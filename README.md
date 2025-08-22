@@ -178,7 +178,7 @@ python run_inference.py --weights runs/best.pt --source demo_images/
 streamlit run app/streamlit_app.py
 ```
 
-#### Streamlit Cloud / Demo Link Placeholder
+# Streamlit Cloud / Demo Link Placeholder
 
 [![Launch SafeSight AI Assistant](https://img.shields.io/badge/Launch-Streamlit-blue)]([[insert your Streamlit link here]])
 

@@ -32,7 +32,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------- HEADER -----------------
-st.title("🦺 PPE Vision 360")
+st.title("🦺 SafeSight-AI-Assistant(PPE-Vision-360)")
 st.write("All-in-One PPE Compliance Platform")
 
 # ----------------- MODULES -----------------
