@@ -56,9 +56,31 @@ if st.button("🚀 Run Hybrid Compliance Check"):
             st.write("**Detected PPE (Text):**", result['detected_text_items'])
             st.write("**Phase 7 Reasoning (Text):**", result['text_reasoning'])
 
-            # ---------------- Dynamic Compliance Logic ----------------
-            required_ppe = {"Gloves", "Boots", "Vest", "Goggles"}  # Safety Vest -> Vest
-            detected_ppe = set(result['detected_image_items']) | set(result['detected_text_items'])
+           # ---------------- Dynamic Compliance Logic ----------------
+            # Define canonical PPE items
+            required_ppe = {"Gloves", "Boots", "Vest", "Helmet"}
+
+            # Map variations (all lowercase) to canonical names
+            ppe_variations = {
+                "glove": "Gloves",
+                "gloves": "Gloves",
+                "boot": "Boots",
+                "boots": "Boots",
+                "vest": "Vest",
+                "vests": "Vest",
+                "helmet": "Helmet",
+                "helmets": "Helmet"
+            }
+
+            # Normalize detected items (convert to lowercase first)
+            detected_items_raw = set(result['detected_image_items']) | set(result['detected_text_items'])
+            detected_ppe = set()
+            for item in detected_items_raw:
+                key = item.strip().lower()  # lowercase & remove extra spaces
+                if key in ppe_variations:
+                    detected_ppe.add(ppe_variations[key])
+
+            # Find missing PPE
             missing_ppe = required_ppe - detected_ppe
 
             # Recommendations per missing item
@@ -66,8 +88,9 @@ if st.button("🚀 Run Hybrid Compliance Check"):
                 "Gloves": "Wear safety gloves to protect your hands.",
                 "Boots": "Wear safety boots to protect your feet.",
                 "Vest": "Wear a reflective vest.",
-                "Goggles": "Wear protective goggles."
+                "Helmet": "Wear a safety helmet to protect your head."
             }
+
 
             if not missing_ppe:
                 # Fully compliant
